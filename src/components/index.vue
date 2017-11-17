@@ -10,7 +10,6 @@
 import header from './header';
 import body from './body';
 export default {
-  name: 'HelloWorld',
   data() {
     return {
      

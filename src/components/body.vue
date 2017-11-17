@@ -3,10 +3,13 @@
 
     <h1>搜尋: EX:小港區 </h1>
     <div>
-      <input type="text" v-model="filter_name">
+      <input type="text" v-model="filter" placeholder="輸入過濾區域">
     </div>
     <div class="row">
-      <div class="newsItem col-12 col-sm-6 col-md-4 col-lg-4" v-for="(r, index) in items.slice(pageStart, pageStart + countOfPage)">
+       <div class="col-sm-12">
+      <h4>共有{{filteredRows.length}}個景點</h4>
+    </div>
+      <div class="newsItem col-12 col-sm-6 col-md-4 col-lg-4 " v-for="(r, index) in filteredRows.slice(pageStart, pageStart + countOfPage)">
         <div class="card">
           <div class="card-block">
             <a href="#">
@@ -53,24 +56,28 @@ export default {
   data() {
     return {
       items: [],
+      posts: [],
       countOfPage: 15,
       currPage: 1,
+      filter: '',
     }
   },
   computed: {
+     filteredRows: function(){
+    // 因為 JavaScript 的 filter 有分大小寫，
+    // 所以這裡將 filter_name 與 rows[n].name 通通轉小寫方便比對。
+    let filter = this.filter.toLowerCase();
+
+    // 如果 filter_name 有內容，回傳過濾後的資料，否則將原本的 rows 回傳。
+    return ( this.filter.trim() !== '' ) ? 
+      this.items.filter(function(d){ return d.Add.toLowerCase().indexOf(filter) > -1; }) : 
+    this.items;
+  },
     pageStart: function() {
       return (this.currPage - 1) * this.countOfPage;
     },
     totalPage: function() {
-      return Math.ceil(this.items.length / this.countOfPage);
-    }
-  },
-  computed: {
-    pageStart: function() {
-      return (this.currPage - 1) * this.countOfPage;
-    },
-    totalPage: function() {
-      return Math.ceil(this.items.length / this.countOfPage);
+      return Math.ceil(this.filteredRows.length / this.countOfPage);
     }
   },
   created() {
@@ -118,6 +125,7 @@ export default {
 .image img {
   width: 100%;
   height: 30vh;
+  background-size: cover;
 }
 
 h2 {

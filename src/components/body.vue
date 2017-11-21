@@ -6,31 +6,65 @@
       <input type="text" v-model="filter" placeholder="輸入過濾區域">
     </div>
     <div class="row">
-       <div class="col-sm-12">
-      <h4>共有{{filteredRows.length}}個景點</h4>
-    </div>
+      <div class="col-sm-12">
+        <h4>共有{{filteredRows.length}}個景點</h4>
+      </div>
       <div class="newsItem col-12 col-sm-6 col-md-4 col-lg-4 " v-for="(r, index) in filteredRows.slice(pageStart, pageStart + countOfPage)">
         <div class="card">
           <div class="card-block">
-            <a href="#">
-              <div class="image">
-                <img v-bind:src="r.Picture1" />
-              </div>
-              <h2>景點名稱：{{r.Name}}</h2>
-              <div class="summary">
+
+            <div class="image">
+              <img v-bind:src="r.Picture1" />
+            </div>
+            <h2>景點名稱：{{r.Name}}</h2>
+            <div class="summary">
+              <p>
+                <b>地址：{{r.Add}}</b>
                 <p>
-                  <b>地址：{{r.Add}}</b>
                   <p>
-                    <p>
-                      <b>電話：{{r.Tel}}</b>
-                    </p>
-                    <p>
-                      <b>時間:{{r.Opentime}}</b>
-                    </p>
-              </div>
-            </a>
+                    <b>電話：{{r.Tel}}</b>
+                  </p>
+                  <p>
+                    <b>時間:{{r.Opentime}}</b>
+                  </p>
+                  <button type="button" class="btn btn-success" data-toggle="modal" v-bind:data-target="'#'+r.Id">
+                    景點介紹
+                  </button>
+                  <!-- Modal -->
+                  <div class="col-sm-12">
+                    <div class="modal fade" v-bind:id="r.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h4 class="modal-title" style="font-family: cursive;    color: aliceblue; "id="exampleModalLongTitle">{{r.Name}}</h4>
+                            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button> -->
+                          </div>
+                          <div class="modal-body">
+                            <div class="image">
+                              <img v-bind:src="r.Picture1" />
+                            </div>
+                            <div class="">
+                              <span style="font-size:18px;">景點介紹:</span>
+                              <p>{{r.Toldescribe}}</p>
+                              <p>地址:{{r.Add}}</p>
+                              <p>電話:{{r.Tel}}</p>
+                              <p>時間:{{r.Opentime}}</p>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+
           </div>
         </div>
+
       </div>
     </div>
     <nav aria-label="Page navigation example">
@@ -63,16 +97,16 @@ export default {
     }
   },
   computed: {
-     filteredRows: function(){
-    // 因為 JavaScript 的 filter 有分大小寫，
-    // 所以這裡將 filter_name 與 rows[n].name 通通轉小寫方便比對。
-    let filter = this.filter.toLowerCase();
+    filteredRows: function() {
+      // 因為 JavaScript 的 filter 有分大小寫，
+      // 所以這裡將 filter_name 與 rows[n].name 通通轉小寫方便比對。
+      let filter = this.filter.toLowerCase();
 
-    // 如果 filter_name 有內容，回傳過濾後的資料，否則將原本的 rows 回傳。
-    return ( this.filter.trim() !== '' ) ? 
-      this.items.filter(function(d){ return d.Add.toLowerCase().indexOf(filter) > -1; }) : 
-    this.items;
-  },
+      // 如果 filter_name 有內容，回傳過濾後的資料，否則將原本的 rows 回傳。
+      return (this.filter.trim() !== '') ?
+        this.items.filter(function(d) { return d.Add.toLowerCase().indexOf(filter) > -1; }) :
+        this.items;
+    },
     pageStart: function() {
       return (this.currPage - 1) * this.countOfPage;
     },
@@ -84,7 +118,7 @@ export default {
     this.getjson();
   },
   methods: {
-        setPage: function(idx) {
+    setPage: function(idx) {
       if (idx <= 0 || idx > this.totalPage) {
         return;
       }
@@ -105,6 +139,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.modal-header {
+  background-color: #42ab9e;
+  text-align: center;
+}
+
 .row {
   margin-top: 30px;
 }
